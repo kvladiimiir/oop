@@ -1,5 +1,5 @@
 @echo off
-
+chcp 1251
 set PROGRAM="%~1"
 
 set OUT="%TEMP%\out.txt"
@@ -20,6 +20,13 @@ fc %OUT% output_many_result.txt
 if errorlevel 1 goto err
 echo Many result test complete success
 
+:: Тестируем поиск с несколькими совпадениями
+echo Russian result test
+call %PROGRAM% input_many_result.txt "Не мысля гордый"> %OUT% 
+if errorlevel 1 goto err
+fc %OUT% output_russian.txt 
+if errorlevel 1 goto err
+echo Russian result test complete success
 
 :: Тестируем поиск когда не найдено совпадений
 echo No result test

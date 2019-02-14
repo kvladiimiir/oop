@@ -7,19 +7,30 @@ using namespace std;
 
 const int NUM_ARGUMENT = 3;
 
-int main(int argc, char* argv[])
+bool IsValid(int numArg, string fileName)
 {
-	if (argc != NUM_ARGUMENT)
+	if (numArg != NUM_ARGUMENT)
 	{
 		cout << "Error arguments!\n";
-		return 1;
+		return false;
 	}
-
-	string fileInputName = argv[1];
-
-	if (fileInputName.empty())
+	else if (fileName.empty())
 	{
 		cout << "File name is empty\n";
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+int main(int argc, char* argv[])
+{
+	string fileInputName = argv[1];
+
+	if (!IsValid)
+	{
 		return 1;
 	}
 
@@ -55,5 +66,6 @@ int main(int argc, char* argv[])
 		cout << "Text not found!\n";
 		return 1;
 	}
+
 	return 0;
 }

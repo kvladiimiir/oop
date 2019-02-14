@@ -48,9 +48,6 @@
     <Text Include="input_no_result.txt">
       <Filter>test_data</Filter>
     </Text>
-    <Text Include="output_no_result.txt">
-      <Filter>test_data</Filter>
-    </Text>
     <Text Include="input_many_result.txt">
       <Filter>test_data</Filter>
     </Text>
@@ -60,13 +57,7 @@
     <Text Include="input_empty_file.txt">
       <Filter>test_data</Filter>
     </Text>
-    <Text Include="output_empty_file.txt">
-      <Filter>test_data</Filter>
-    </Text>
     <Text Include="output_russian.txt">
-      <Filter>test_data</Filter>
-    </Text>
-    <Text Include="output_empty_string.txt">
       <Filter>test_data</Filter>
     </Text>
   </ItemGroup>

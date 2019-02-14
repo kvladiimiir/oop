@@ -29,12 +29,19 @@ int main(int argc, char* argv[])
 {
 	string fileInputName = argv[1];
 
-	if (!IsValid)
+	if (!IsValid(argc, fileInputName))
 	{
 		return 1;
 	}
 
 	ifstream fileToSearch(fileInputName);
+
+	if (!fileToSearch.is_open())
+	{
+		cout << "File is not open!\n";
+		return 1;
+	}
+
 	string stringToFind;
 	stringToFind = argv[2];
 

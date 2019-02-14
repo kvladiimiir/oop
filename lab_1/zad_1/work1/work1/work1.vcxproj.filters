@@ -60,5 +60,17 @@
     <Text Include="output_russian.txt">
       <Filter>test_data</Filter>
     </Text>
+    <Text Include="output_no_result.txt">
+      <Filter>test_data</Filter>
+    </Text>
+    <Text Include="output_empty_string.txt">
+      <Filter>test_data</Filter>
+    </Text>
+    <Text Include="output_many_arguments.txt">
+      <Filter>test_data</Filter>
+    </Text>
+    <Text Include="output_no_file.txt">
+      <Filter>test_data</Filter>
+    </Text>
   </ItemGroup>
 </Project>

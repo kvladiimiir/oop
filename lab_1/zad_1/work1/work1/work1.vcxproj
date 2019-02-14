@@ -192,8 +192,12 @@
     <Text Include="input_empty_file.txt" />
     <Text Include="input_many_result.txt" />
     <Text Include="input_no_result.txt" />
+    <Text Include="output_empty_string.txt" />
+    <Text Include="output_many_arguments.txt" />
     <Text Include="output_many_result.txt" />
     <Text Include="output.txt" />
+    <Text Include="output_no_file.txt" />
+    <Text Include="output_no_result.txt" />
     <Text Include="output_russian.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

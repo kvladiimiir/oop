@@ -29,14 +29,14 @@ int FindTextInFile(ifstream& fileInput, string& findString)
 
 int main(int argc, char* argv[])
 {
-	string fileInputName = argv[1];
-	string stringToFind = argv[2];
-
 	if (argc != NUM_ARGUMENT)
 	{
 		cout << "Error arguments!\n";
 		return 1;
 	}
+
+	string fileInputName = argv[1];
+	string stringToFind = argv[2];
 
 	if (fileInputName.empty())
 	{

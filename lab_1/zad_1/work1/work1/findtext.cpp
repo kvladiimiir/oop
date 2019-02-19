@@ -7,30 +7,45 @@ using namespace std;
 
 const int NUM_ARGUMENT = 3;
 
-bool IsValid(int numArg, string fileName)
+int FindTextInFile(ifstream& fileInput, string& findString)
 {
-	if (numArg != NUM_ARGUMENT)
+	int numOfCoincidences = 0;
+	int lineNum = 0;
+	string searchLine;
+
+	while (getline(fileInput, searchLine))
 	{
-		cout << "Error arguments!\n";
-		return false;
+		lineNum++;
+
+		if (searchLine.find(findString) != string::npos)
+		{
+			cout << lineNum << '\n';
+			numOfCoincidences++;
+		}
 	}
-	else if (fileName.empty())
-	{
-		cout << "File name is empty\n";
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+
+	return numOfCoincidences;
 }
 
 int main(int argc, char* argv[])
 {
 	string fileInputName = argv[1];
+	string stringToFind = argv[2];
 
-	if (!IsValid(argc, fileInputName))
+	if (argc != NUM_ARGUMENT)
 	{
+		cout << "Error arguments!\n";
+		return 1;
+	}
+
+	if (fileInputName.empty())
+	{
+		cout << "File name is empty\n";
+		return 1;
+	}
+	else if (stringToFind.empty())
+	{
+		cout << "Find string is empty\n";
 		return 1;
 	}
 
@@ -42,33 +57,9 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	string stringToFind;
-	stringToFind = argv[2];
+	int numCoincidences = FindTextInFile(fileToSearch, stringToFind);
 
-	if (stringToFind.empty())
-	{
-		cout << "Find string is empty\n";
-		return 1;
-	}
-
-	int numOfCoincidences = 0;
-	int lineNum = 0;
-
-	while (!fileToSearch.eof())
-	{
-		string searchLine;
-
-		getline(fileToSearch, searchLine);
-		lineNum++;
-
-		if (searchLine.find(stringToFind) != -1)
-		{
-			cout << lineNum << '\n';
-			numOfCoincidences++;
-		}
-	}
-
-	if (numOfCoincidences == 0)
+	if (numCoincidences == 0)
 	{
 		cout << "Text not found!\n";
 		return 1;

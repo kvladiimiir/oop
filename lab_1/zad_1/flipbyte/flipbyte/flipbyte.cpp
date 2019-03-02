@@ -20,8 +20,9 @@ bool CheckNum(string str)
 	return true;
 }
 
-int TransferNum(int numOnBit, vector<int> &numOfBinary)
+int TransferNum(int numOnBit)
 {
+	vector<int> numOfBinary(NUM_SIZE, 0);
 	int i = 0;
 	int resultNum = 0;
 	while (numOnBit > 0)
@@ -45,8 +46,6 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	vector<int> numBinary(NUM_SIZE, 0);
-
 	string inputLine = argv[1];
 
 	if ((inputLine == "") || (!CheckNum(inputLine)))
@@ -62,7 +61,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	int bitaryNum = TransferNum(inputNum, numBinary);
+	int bitaryNum = TransferNum(inputNum);
 	cout << bitaryNum << '\n';
 
 	return 0;

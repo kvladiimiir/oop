@@ -22,23 +22,30 @@ struct Terr
 	vector<CoordPoint> startPoint;
 };
 
-void ReadInputData(Terr& terr, ifstream& inputFile)
+bool ReadInputData(Terr& terr, string& fileInputName)
 {
 	string line;
 	int numstr = 0;
 
-	while (getline(inputFile, line))
-	{
-		if (terr.mapTerr.size() > 100)
-		{
-			break;
-		}
+	ifstream fileInput(fileInputName);
 
+	if (!fileInput.is_open())
+	{
+		return 1;
+	}
+
+	while (getline(fileInput, line))
+	{
+		if (numstr >= 100)
+			break;
 		vector<char> str;
 		terr.mapTerr.push_back(str);
-
+		int numsym = 0;
 		for (char symb : line)
 		{
+			if (numsym >= 100)
+				break;
+
 			terr.mapTerr[terr.mapTerr.size() - 1].push_back(symb);
 
 			if (symb == 'O')
@@ -49,20 +56,51 @@ void ReadInputData(Terr& terr, ifstream& inputFile)
 				cout << newStartPoint.y << ' ' << newStartPoint.x << '\n';
 				terr.startPoint.push_back(newStartPoint);
 			}
+			numsym++;
 		}
+		numstr++;
 	}
+	return true;
 }
 
 void FillTerr(Terr& terr, size_t col, size_t row)
 {
-	if (terr.mapTerr[col][row] == ' ')
+	terr.mapTerr.resize(100);
+	const auto rowsSize = terr.mapTerr.size();
+	if (rowsSize - 1 < row || rowsSize == 0 || row >= 100 || row < 0)
+		return;
+	const auto colsSize = terr.mapTerr[row].size();
+	if (colsSize == 0 || col < 0 || col >= 100 || colsSize - 1 < col)
+		return;
+	if (terr.mapTerr[row][col] == ' ')
 	{
-		terr.mapTerr[col][row] = '_';
+		terr.mapTerr[row][col] = '_';
 		FillTerr(terr, col + 1, row);
 		FillTerr(terr, col - 1, row);
 		FillTerr(terr, col, row - 1);
 		FillTerr(terr, col, row + 1);
 	}
+}
+
+bool OutputData(Terr& terr, string fileOutputName)
+{
+	ofstream fileOutput(fileOutputName);
+
+	if (!fileOutput.is_open())
+	{
+		return false;
+	}
+
+	for (vector<char> line : terr.mapTerr)
+	{
+		for (char symb : line)
+		{
+			fileOutput << symb;
+		}
+		fileOutput << '\n';
+	}
+
+	return true;
 }
 
 int main(int argc, char *argv[])
@@ -80,42 +118,25 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	ifstream fileInput("input2.txt");
-	ofstream fileOutput(fileOutputName);
-
-	if (!fileInput.is_open())
-	{
-		return 1;
-	}
-
-	if (!fileOutput.is_open())
-	{
-		return 1;
-	}
-
 	Terr mapTerrInput;
 
-
-
-	ReadInputData(mapTerrInput, fileInput);
-
-	cout << mapTerrInput.startPoint.size() << '\n';
+	if (!ReadInputData(mapTerrInput, fileInputName))
+	{
+		return 1;
+	}
 
 	for (size_t i = 0; i < mapTerrInput.startPoint.size(); i++)
 	{
-		size_t coordX = mapTerrInput.startPoint[i].x;
-		size_t coordY = mapTerrInput.startPoint[i].y;
-		cout << coordX << ' ' << coordY << '\n';
+		auto coordX = mapTerrInput.startPoint[i].x;
+		auto coordY = mapTerrInput.startPoint[i].y;
+		mapTerrInput.mapTerr[coordY][coordX] = ' ';
 		FillTerr(mapTerrInput, coordX, coordY);
+		mapTerrInput.mapTerr[coordY][coordX] = 'O';
 	}
 
-	for (vector<char> line : mapTerrInput.mapTerr)
+	if (!OutputData(mapTerrInput, fileOutputName))
 	{
-		for (char symb : line)
-		{
-			cout << symb;
-		}
-		cout << '\n';
+		return 1;
 	}
 
 	return 0;

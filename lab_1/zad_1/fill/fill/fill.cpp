@@ -27,11 +27,14 @@ void ReadInputData(Terr& terr, ifstream& inputFile)
 	string line;
 	int numstr = 0;
 
-	while (terr.mapTerr.size() < MAX_SIZE_TER)
+	while (getline(inputFile, line))
 	{
-		getline(inputFile, line)
+		if (terr.mapTerr.size() > 100)
+		{
+			break;
+		}
 
-			vector<char> str;
+		vector<char> str;
 		terr.mapTerr.push_back(str);
 
 		for (char symb : line)

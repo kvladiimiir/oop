@@ -36,14 +36,14 @@ bool ReadInputData(Terr& terr, string& fileInputName)
 
 	while (getline(fileInput, line))
 	{
-		if (numstr >= 100)
+		if (numstr >= MAX_SIZE_TER)
 			break;
 		vector<char> str;
 		terr.mapTerr.push_back(str);
 		int numsym = 0;
 		for (char symb : line)
 		{
-			if (numsym >= 100)
+			if (numsym >= MAX_SIZE_TER)
 				break;
 
 			terr.mapTerr[terr.mapTerr.size() - 1].push_back(symb);
@@ -63,16 +63,30 @@ bool ReadInputData(Terr& terr, string& fileInputName)
 	return true;
 }
 
+void ResizeTerr(Terr& terr, int size)
+{
+	terr.mapTerr.resize(size);
+	for (auto i = 0; i < size; i++)
+	{
+		terr.mapTerr[i].resize(size);
+	}
+}
+
 void FillTerr(Terr& terr, size_t col, size_t row)
 {
-	terr.mapTerr.resize(100);
+	//terr.mapTerr.resize(MAX_SIZE_TER);
+
 	const auto rowsSize = terr.mapTerr.size();
-	if (rowsSize - 1 < row || rowsSize == 0 || row >= 100 || row < 0)
+	if (rowsSize == 0 || row >= MAX_SIZE_TER || row < 0)
 		return;
+	if (rowsSize - 1 < row)
+		ResizeTerr(terr, MAX_SIZE_TER);
 	const auto colsSize = terr.mapTerr[row].size();
-	if (colsSize == 0 || col < 0 || col >= 100 || colsSize - 1 < col)
+	if (colsSize == 0 || col < 0 || col >= MAX_SIZE_TER)
 		return;
-	if (terr.mapTerr[row][col] == ' ')
+	if (colsSize - 1 < col)
+		ResizeTerr(terr, MAX_SIZE_TER);
+	if (terr.mapTerr[row][col] == ' ' || terr.mapTerr[row][col] == '\0')
 	{
 		terr.mapTerr[row][col] = '_';
 		FillTerr(terr, col + 1, row);
@@ -95,9 +109,9 @@ bool OutputData(Terr& terr, string fileOutputName)
 	{
 		for (char symb : line)
 		{
-			fileOutput << symb;
+			cout << symb;
 		}
-		fileOutput << '\n';
+		cout << '\n';
 	}
 
 	return true;
@@ -105,13 +119,13 @@ bool OutputData(Terr& terr, string fileOutputName)
 
 int main(int argc, char *argv[])
 {
-	if (argc != NUM_ARGUMENT)
+	/*if (argc != NUM_ARGUMENT)
 	{
 		return 1;
-	}
+	}*/
 
-	string fileInputName = argv[1];
-	string fileOutputName = argv[2];
+	string fileInputName = "input2.txt";//argv[1];
+	string fileOutputName = "output2.txt";//argv[2];
 
 	if (fileInputName.empty() || fileOutputName.empty())
 	{

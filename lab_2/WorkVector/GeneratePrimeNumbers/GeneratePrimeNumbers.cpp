@@ -3,7 +3,7 @@
 
 void PrintPrimeNumbers(std::set<int>& setPrimeNumbers)
 {
-	for (std::set<int>::iterator i = setPrimeNumbers.begin(); i != setPrimeNumbers.end(); i++)
+	for (auto i = setPrimeNumbers.begin(); i != setPrimeNumbers.end(); i++)
 	{
 		std::cout << *i << ' ';
 	}

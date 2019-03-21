@@ -8,4 +8,5 @@
 
 const int MAX_NUM = 100000000;
 
+std::set<int> FillingSet(std::vector<bool>& metPrimeNumbers);
 std::set<int> GeneratePrimeNumbersSet(const int& upperBound);

@@ -6,18 +6,15 @@ void SortVector(std::vector<double>& vectorNum)
 	std::sort(vectorNum.begin(), vectorNum.end());
 }
 
-std::vector<double> WorkWithVector(std::vector<double>& vectorNum)
+void WorkWithVector(std::vector<double>& resultVector)
 {
-	double minElement = *std::min_element(vectorNum.begin(), vectorNum.end());
-
-	std::vector<double> resultVector = vectorNum;
-
-	for (size_t i = 0; i < vectorNum.size(); i++)
+	if (resultVector.size() != 0)
 	{
-		resultVector[i] = resultVector[i] * minElement;
+		double minElement = *std::min_element(resultVector.begin(), resultVector.end());
+
+		for (size_t i = 0; i < resultVector.size(); i++)
+		{
+			resultVector[i] = resultVector[i] * minElement;
+		}
 	}
-
-	SortVector(resultVector);
-
-	return resultVector;
 }

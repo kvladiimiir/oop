@@ -49,14 +49,11 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	std::vector<double> resultVector;
+	WorkWithVector(vectorOFNum);
 
-	if (vectorOFNum.size() != 0)
-	{
-		resultVector = WorkWithVector(vectorOFNum);
-	}
+	SortVector(vectorOFNum);
 
-	PrintVector(resultVector);
+	PrintVector(vectorOFNum);
 
 	return 0;
 }

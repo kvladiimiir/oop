@@ -96,3 +96,24 @@ TEST_CASE("Check function GetInfo")
 	CTVSet tv;
 	REQUIRE_THROWS(tv.GetInfo());
 }
+
+TEST_CASE("TV")
+{
+	CTVSet tv;
+	tv.TurnOn();
+	tv.SelectChannel(19);
+	std::string nameChannel = "Russia1";
+	tv.SetChannelName(12, nameChannel);
+	nameChannel = "Sport";
+	tv.SetChannelName(3, nameChannel);
+
+	REQUIRE(tv.GetChannelName(3) == "Sport");
+	REQUIRE(tv.GetChannelByName(nameChannel) == 3);
+
+	tv.DeleteChannelName(nameChannel);
+	REQUIRE_THROWS(tv.GetChannelName(3));
+	REQUIRE_THROWS(tv.GetChannelByName(nameChannel));
+
+	tv.TurnOff();
+	REQUIRE_THROWS(tv.GetChannelName(12));
+}

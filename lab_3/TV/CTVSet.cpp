@@ -184,8 +184,8 @@ void CTVSet::GetInfo()
 	{
 		std::cout << "TV is off.\n";
 		throw std::logic_error("TV is off!\n");
-
 	}
+
 	std::cout << "TV is on.\n";
 
 	std::cout << "Current channel is " << m_currentChanel << '\n';

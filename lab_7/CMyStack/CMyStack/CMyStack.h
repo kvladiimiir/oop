@@ -124,10 +124,8 @@ private:
 	{
 		std::shared_ptr<Node> metkaCopiedStack = stack.m_top;
 		m_top = std::make_shared<Node>(*metkaCopiedStack);
-
 		m_stackSize = stack.m_stackSize;
 		auto metkaNewStack = m_top;
-		metkaNewStack->data = metkaCopiedStack->data;
 
 		while (metkaCopiedStack->prev != nullptr)
 		{

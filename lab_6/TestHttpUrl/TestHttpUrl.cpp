@@ -37,19 +37,19 @@ TEST_CASE("Check Url String")
 	SECTION("Port default HTTPS")
 	{
 		std::string urlStr = "HTTPS://drive.google.com/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk";
-		CheckUrlString(urlStr, "https", "drive.google.com", HTTPS_DEF_PORT, "/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk");
+		CheckUrlString("https://drive.google.com/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk", "https", "drive.google.com", HTTPS_DEF_PORT, "/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk");
 	}
 
 	SECTION("Port default HTTP")
 	{
 		std::string urlStr = "HTTP://lks.volgatech.net/ExamList";
-		CheckUrlString(urlStr, "http", "lks.volgatech.net", HTTP_DEF_PORT, "/ExamList");
+		CheckUrlString("http://lks.volgatech.net/ExamList", "http", "lks.volgatech.net", HTTP_DEF_PORT, "/ExamList");
 	}
 
 	SECTION("Port 73 HTTPS")
 	{
 		std::string urlStr = "HTTP://lks.volgatech.net:73/ExamList";
-		CheckUrlString(urlStr, "http", "lks.volgatech.net", 73, "/ExamList");
+		CheckUrlString("http://lks.volgatech.net:73/ExamList", "http", "lks.volgatech.net", 73, "/ExamList");
 	}
 
 	SECTION("Valide document 1")
@@ -66,14 +66,14 @@ TEST_CASE("Check Url String")
 
 	SECTION("Port installed HTTP port MIN_NUMBER_PORT")
 	{
-		std::string urlStr = "HTTP://www.my-site-time.com:1/docs/document1.html?page=3450&lang=en#zero17";
-		CheckUrlString(urlStr, "http", "www.my-site-time.com", MIN_NUM_PORT, "/docs/document1.html");
+		std::string urlStr = "HTTP://www.my-site-time.com:0/docs/document1.html";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
 	SECTION("Port installed HTTP port MAX_NUMBER_PORT")
 	{
-		std::string urlStr = "HTTP://www.mysite-time.com:65535/docs/document1.html?page=3450&lang=en#zero17";
-		CheckUrlString(urlStr, "http", "www.mysite-time.com", MAX_NUM_PORT, "/docs/document1.html");
+		std::string urlStr = "HTTP://www.mysite-time.com:65536/docs/document1.html";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
 	SECTION("Url empty")
@@ -97,12 +97,6 @@ TEST_CASE("Check Url String")
 	SECTION("Invalid URL domain 2")
 	{
 		std::string urlStr = "https://www google.com/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
-	}
-
-	SECTION("Invalid URL domain 3")
-	{
-		std::string urlStr = "https://www.?%google.com/doc";
 		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 }

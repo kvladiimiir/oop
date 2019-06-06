@@ -7,28 +7,46 @@ CHttpUrl::CHttpUrl(std::string const& url)
 		throw CUrlParsingError("Empty url\n");
 	}
 
-	ParcingURL(url);
+	ParseURL(url);
 }
 
 CHttpUrl::CHttpUrl(std::string const& domain, std::string const& document, Protocol protocol)
 	: m_protocol(protocol)
-	, m_document(Validation(document))
-	, m_domain(Validation(domain))
+	, m_document(document)
+	, m_domain(domain)
 {
 	m_port = GetPortDef(protocol);
+	ValidateDocument(document);
+	ValidateDomain(domain);
 }
 
 CHttpUrl::CHttpUrl(std::string const& domain, std::string const& document, Protocol protocol, int port)
 	: m_protocol(protocol)
 	, m_port(port)
-	, m_document(Validation(document))
-	, m_domain(Validation(domain))
+	, m_document(document)
+	, m_domain(domain)
 {
+	ValidatePort(port);
+	ValidateDocument(document);
+	ValidateDomain(domain);
 }
 
 std::string CHttpUrl::GetURL() const
 {
-	return m_url;
+	std::string stringUrl;
+	stringUrl += GetProtocol();
+	stringUrl += "://";
+	stringUrl += m_domain;
+
+	if ((m_port != HTTP_DEF_PORT) && (m_port != HTTPS_DEF_PORT))
+	{
+		stringUrl += ":";
+		stringUrl += std::to_string(m_port);
+	}
+
+	stringUrl += m_document;
+
+	return stringUrl;
 }
 
 std::string CHttpUrl::GetDomain() const
@@ -53,7 +71,7 @@ std::string CHttpUrl::GetProtocol() const
 	}
 }
 
-int CHttpUrl::GetPortDef(Protocol protocol)
+int CHttpUrl::GetPortDef(Protocol protocol) const
 {
 	if (m_protocol == Protocol::HTTP)
 	{
@@ -65,36 +83,17 @@ int CHttpUrl::GetPortDef(Protocol protocol)
 	}
 }
 
-int CHttpUrl::ValidPort(const std::string& port)
+void CHttpUrl::ValidatePort(const int& port) const
 {
-	int portNum = std::stoi(port);
-
-	if ((portNum > MAX_NUM_PORT) || (portNum < MIN_NUM_PORT))
+	if ((port > MAX_NUM_PORT) || (port < MIN_NUM_PORT))
 	{
 		throw CUrlParsingError("Port error\n");
-	}
-	else
-	{
-		return portNum;
 	}
 }
 
 int CHttpUrl::GetPort() const
 {
 	return m_port;
-}
-
-std::string CHttpUrl::Validation(const std::string& str)
-{
-	for (char ch : str)
-	{
-		if (!((ch == '/') || (ch == ':') || (ch == '=') || (ch == '#') || (ch == '&') || (ch == '?') || (ch == '[') || (ch == ']') || (ch == '-') || (ch == '.') || (ch == '_') || (ch == '+') || (ch == '(') || (ch == ')') || (ch == '!') || (ch == '$') || (ch == ',') || isalpha(ch) || isdigit(ch)))
-		{
-			throw CUrlParsingError("Error validation\n");
-		}
-	}
-
-	return str;
 }
 
 Protocol CHttpUrl::GetProtocolEnum(const std::string& protocol)
@@ -132,27 +131,54 @@ void CHttpUrl::DivisionDomainPort(const std::string& str)
 	else
 	{
 		auto const firstPos = str.find_last_of(':');
-		m_port = ValidPort(str.substr(firstPos + 1, (str.length() - firstPos - 1)));
+		m_port = std::stoi(str.substr(firstPos + 1, (str.length() - firstPos - 1)));
+		ValidatePort(m_port);
 		m_domain = str.substr(0, firstPos);
 	}
 }
 
-void CHttpUrl::ParcingURL(const std::string& url)
+void CHttpUrl::ValidateDomain(const std::string& domain) const
 {
-	std::string validateUrl = Validation(url);
+	if (domain.empty())
+	{
+		throw CUrlParsingError("Error validation domain\n");
+	}
 
+	for (char ch : domain)
+	{
+		if (!((ch == '/') || (ch == ':') || (ch == '=') || (ch == '#') || (ch == '&') || (ch == '[') || (ch == ']') || (ch == '-') || (ch == '.') || (ch == '_') || (ch == '+') || (ch == '(') || (ch == ')') || (ch == '!') || (ch == '$') || (ch == ',') || isalpha(ch) || isdigit(ch)))
+		{
+			throw CUrlParsingError("Error validation domain\n");
+		}
+	}
+}
+
+void CHttpUrl::ValidateDocument(const std::string& document) const
+{
+	for (char ch : document)
+	{
+		if (!((ch == '/') || (ch == ':') || (ch == '=') || (ch == '%') || (ch == '#') || (ch == '&') || (ch == '?') || (ch == '[') || (ch == ']') || (ch == '-') || (ch == '.') || (ch == '_') || (ch == '+') || (ch == '(') || (ch == ')') || (ch == '!') || (ch == '$') || (ch == ',') || isalpha(ch) || isdigit(ch)))
+		{
+			throw CUrlParsingError("Error validation document\n");
+		}
+	}
+}
+
+
+void CHttpUrl::ParseURL(const std::string& url)
+{
 	std::regex urlValidRegex(R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
 
 	std::smatch urlMatch;
 
-	if (!std::regex_match(validateUrl, urlMatch, urlValidRegex))
+	if (!std::regex_match(url, urlMatch, urlValidRegex))
 	{
 		throw CUrlParsingError("Error input url-string");
 	}
-
-	m_url = std::string(urlMatch[0]);
 	m_protocol = GetProtocolEnum(urlMatch[2]);
 	std::string domain_port = std::string(urlMatch[4]);
 	DivisionDomainPort(domain_port);
 	m_document = std::string(urlMatch[5]);
+	ValidateDocument(m_document);
+	ValidateDomain(m_domain);
 }

@@ -66,14 +66,32 @@ TEST_CASE("Check Url String")
 
 	SECTION("Port installed HTTP port MIN_NUMBER_PORT")
 	{
-		std::string urlStr = "HTTP://www.my-site-time.com:0/docs/document1.html";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
+		std::string urlStr = "https://www.youtube.com:1/doc";
+		CheckUrlString(urlStr, "https", "www.youtube.com", 1, "/doc");
 	}
 
 	SECTION("Port installed HTTP port MAX_NUMBER_PORT")
 	{
+		std::string urlStr = "https://www.youtube.com:65535/doc";
+		CheckUrlString(urlStr, "https", "www.youtube.com", 65535, "/doc");
+	}
+
+	SECTION("hTtP test")
+	{
+		std::string urlStr = "hTtP://ya.ru/";
+		CheckUrlString("http://ya.ru/", "http", "ya.ru", HTTP_DEF_PORT, "/");
+	}
+
+	SECTION("Port installed HTTP port 0")
+	{
+		std::string urlStr = "HTTP://www.my-site-time.com:0/docs/document1.html";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+	}
+
+	SECTION("Port installed HTTP port 65536")
+	{
 		std::string urlStr = "HTTP://www.mysite-time.com:65536/docs/document1.html";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
 	}
 
 	SECTION("Url empty")
@@ -82,22 +100,34 @@ TEST_CASE("Check Url String")
 		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
+	SECTION("Url empty")
+	{
+		std::string urlStr = "htts://www.google.com:1/doc";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
+	}
+
 	SECTION("Invalid URL port")
 	{
 		std::string urlStr = "https://www.google.com:-1/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
 	}
 
 	SECTION("Invalid URL domain 1")
 	{
 		std::string urlStr = "https://www.googl^e.com/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
 	}
 
 	SECTION("Invalid URL domain 2")
 	{
 		std::string urlStr = "https://www google.com/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+	}
+
+	SECTION("Invalid URL")
+	{
+		std::string urlStr = "http:/host/doc";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
 	}
 }
 

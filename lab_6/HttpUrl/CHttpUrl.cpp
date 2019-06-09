@@ -1,4 +1,5 @@
 #include "CHttpUrl.h"
+#include "ValidateUrlComponents.h"
 
 CHttpUrl::CHttpUrl(std::string const& url)
 {
@@ -83,14 +84,6 @@ int CHttpUrl::GetPortDef(Protocol protocol) const
 	}
 }
 
-void CHttpUrl::ValidatePort(const int& port) const
-{
-	if ((port > MAX_NUM_PORT) || (port < MIN_NUM_PORT))
-	{
-		throw CUrlParsingError("Port error\n");
-	}
-}
-
 int CHttpUrl::GetPort() const
 {
 	return m_port;
@@ -98,11 +91,13 @@ int CHttpUrl::GetPort() const
 
 Protocol CHttpUrl::GetProtocolEnum(const std::string& protocol)
 {
-	if ((protocol == "HTTP") || (protocol == "http"))
+	auto upperProtocol = protocol;
+	std::transform(upperProtocol.begin(), upperProtocol.end(), upperProtocol.begin(), ::tolower);
+	if (upperProtocol == "http")
 	{
 		return Protocol::HTTP;
 	}
-	else if ((protocol == "HTTPS") || (protocol == "https"))
+	else if (upperProtocol == "https")
 	{
 		return Protocol::HTTPS;
 	}
@@ -137,32 +132,7 @@ void CHttpUrl::DivisionDomainPort(const std::string& str)
 	}
 }
 
-void CHttpUrl::ValidateDomain(const std::string& domain) const
-{
-	if (domain.empty())
-	{
-		throw CUrlParsingError("Error validation domain\n");
-	}
 
-	for (char ch : domain)
-	{
-		if (!((ch == '/') || (ch == ':') || (ch == '=') || (ch == '#') || (ch == '&') || (ch == '[') || (ch == ']') || (ch == '-') || (ch == '.') || (ch == '_') || (ch == '+') || (ch == '(') || (ch == ')') || (ch == '!') || (ch == '$') || (ch == ',') || isalpha(ch) || isdigit(ch)))
-		{
-			throw CUrlParsingError("Error validation domain\n");
-		}
-	}
-}
-
-void CHttpUrl::ValidateDocument(const std::string& document) const
-{
-	for (char ch : document)
-	{
-		if (!((ch == '/') || (ch == ':') || (ch == '=') || (ch == '%') || (ch == '#') || (ch == '&') || (ch == '?') || (ch == '[') || (ch == ']') || (ch == '-') || (ch == '.') || (ch == '_') || (ch == '+') || (ch == '(') || (ch == ')') || (ch == '!') || (ch == '$') || (ch == ',') || isalpha(ch) || isdigit(ch)))
-		{
-			throw CUrlParsingError("Error validation document\n");
-		}
-	}
-}
 
 
 void CHttpUrl::ParseURL(const std::string& url)

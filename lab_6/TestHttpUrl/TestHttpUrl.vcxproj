@@ -158,11 +158,13 @@
     <ClInclude Include="..\HttpUrl\CHttpUrl.h" />
     <ClInclude Include="..\HttpUrl\CUrlParsingError.h" />
     <ClInclude Include="..\HttpUrl\Protocol.h" />
+    <ClInclude Include="..\HttpUrl\ValidateUrlComponents.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\HttpUrl\CHttpUrl.cpp" />
     <ClCompile Include="..\HttpUrl\CUrlParsingError.cpp" />
+    <ClCompile Include="..\HttpUrl\ValidateUrlComponents.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

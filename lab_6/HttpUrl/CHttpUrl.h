@@ -25,9 +25,6 @@ public:
 
 private:
 	void ParseURL(const std::string& url);
-	void ValidateDomain(const std::string& domain) const;
-	void ValidateDocument(const std::string& domain) const;
-	void ValidatePort(const int& port) const;
 	int GetPortDef(Protocol protocol) const;
 	void DivisionDomainPort(const std::string& str);
 	Protocol GetProtocolEnum(const std::string& protocol);

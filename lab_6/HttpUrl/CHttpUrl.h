@@ -26,7 +26,6 @@ public:
 private:
 	void ParseURL(const std::string& url);
 	int GetPortDef(Protocol protocol) const;
-	void DivisionDomainPort(const std::string& str);
 	Protocol GetProtocolEnum(const std::string& protocol);
 
 	Protocol m_protocol;

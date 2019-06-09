@@ -100,12 +100,6 @@ TEST_CASE("Check Url String")
 		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
-	SECTION("Url empty")
-	{
-		std::string urlStr = "htts://www.google.com:1/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
-	}
-
 	SECTION("Invalid URL port")
 	{
 		std::string urlStr = "https://www.google.com:-1/doc";
@@ -127,6 +121,18 @@ TEST_CASE("Check Url String")
 	SECTION("Invalid URL")
 	{
 		std::string urlStr = "http:/host/doc";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+	}
+
+	SECTION("Invalid URL 2")
+	{
+		std::string urlStr = "http://";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+	}
+
+	SECTION("Invalid URL 3")
+	{
+		std::string urlStr = "http:///doc";
 		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
 	}
 }

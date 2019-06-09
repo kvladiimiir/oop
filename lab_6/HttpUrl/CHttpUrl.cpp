@@ -93,6 +93,7 @@ Protocol CHttpUrl::GetProtocolEnum(const std::string& protocol)
 {
 	auto upperProtocol = protocol;
 	std::transform(upperProtocol.begin(), upperProtocol.end(), upperProtocol.begin(), ::tolower);
+
 	if (upperProtocol == "http")
 	{
 		return Protocol::HTTP;
@@ -107,37 +108,9 @@ Protocol CHttpUrl::GetProtocolEnum(const std::string& protocol)
 	}
 }
 
-void CHttpUrl::DivisionDomainPort(const std::string& str)
-{
-	if (str.empty())
-	{
-		m_domain = "/";
-		m_port = GetPortDef(m_protocol);
-		return;
-	}
-
-	auto position = str.find(':');
-
-	if (position == std::string::npos)
-	{
-		m_domain = str;
-		m_port = GetPortDef(m_protocol);
-	}
-	else
-	{
-		auto const firstPos = str.find_last_of(':');
-		m_port = std::stoi(str.substr(firstPos + 1, (str.length() - firstPos - 1)));
-		ValidatePort(m_port);
-		m_domain = str.substr(0, firstPos);
-	}
-}
-
-
-
-
 void CHttpUrl::ParseURL(const std::string& url)
 {
-	std::regex urlValidRegex(R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)");
+	std::regex urlValidRegex(R"(^((?:(https?):\/\/)?((?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9]))|(?:(?:(?:\w+\.){1,2}[\w]{2,3})))(?::(\d+))?((?:\/[\w]*)*)(?:\/|(\/[\w]+\.[\w]{3,4})|(\?(?:([\w]+=[\w]+)&)*([\w]+=[\w]+))?|\?(?:(wsdl|wadl))))$)");
 
 	std::smatch urlMatch;
 
@@ -145,10 +118,32 @@ void CHttpUrl::ParseURL(const std::string& url)
 	{
 		throw CUrlParsingError("Error input url-string");
 	}
+
 	m_protocol = GetProtocolEnum(urlMatch[2]);
-	std::string domain_port = std::string(urlMatch[4]);
-	DivisionDomainPort(domain_port);
-	m_document = std::string(urlMatch[5]);
-	ValidateDocument(m_document);
+
+	m_domain = urlMatch[3];
 	ValidateDomain(m_domain);
+
+	std::string portInput = urlMatch[4];
+	if (portInput.empty())
+	{
+		m_port = GetPortDef(m_protocol);
+	}
+	else
+	{
+		m_port = std::stoi(portInput);
+		ValidatePort(m_port);
+	}
+
+	std::string documentInput = urlMatch[5];
+	if (documentInput.empty())
+	{
+		m_document = "/";
+	}
+	else
+	{
+		m_document = documentInput;
+		ValidateDocument(m_document);
+	}
+
 }

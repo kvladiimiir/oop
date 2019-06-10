@@ -40,43 +40,65 @@ TEST_CASE("Check Url String")
 		CheckUrlString("https://drive.google.com/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk", "https", "drive.google.com", HTTPS_DEF_PORT, "/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk");
 	}
 
-	SECTION("Port default HTTP")
+	SECTION("Test uppercase http and no port")
 	{
 		std::string urlStr = "HTTP://lks.volgatech.net/ExamList";
-		CheckUrlString("http://lks.volgatech.net/ExamList", "http", "lks.volgatech.net", HTTP_DEF_PORT, "/ExamList");
+		CHttpUrl url(urlStr);
+		CHECK(url.GetURL() == "http://lks.volgatech.net/ExamList");
+		CHECK(url.GetProtocol() == "http");
+		CHECK(url.GetDomain() == "lks.volgatech.net");
+		CHECK(url.GetPort() == HTTP_DEF_PORT);
+		CHECK(url.GetDocument() == "/ExamList");
 	}
 
-	SECTION("Port 73 HTTPS")
+	SECTION("Test uppercase https and 73 port")
 	{
 		std::string urlStr = "HTTP://lks.volgatech.net:73/ExamList";
-		CheckUrlString("http://lks.volgatech.net:73/ExamList", "http", "lks.volgatech.net", 73, "/ExamList");
+		CHttpUrl url(urlStr);
+		CHECK(url.GetURL() == "http://lks.volgatech.net:73/ExamList");
+		CHECK(url.GetProtocol() == "http");
+		CHECK(url.GetDomain() == "lks.volgatech.net");
+		CHECK(url.GetPort() == 73);
+		CHECK(url.GetDocument() == "/ExamList");
 	}
 
-	SECTION("Valide document 1")
+	SECTION("Valide url no port")
 	{
 		std::string urlStr = "https://www.youtube.com/";
 		CheckUrlString(urlStr, "https", "www.youtube.com", HTTPS_DEF_PORT, "/");
 	}
 
-	SECTION("Valide document 2")
+	SECTION("Test localhost url")
+	{
+		std::string urlStr = "http://localhost/doc";
+		CheckUrlString(urlStr, "http", "localhost", HTTP_DEF_PORT, "/doc");
+	}
+
+	SECTION("Test ip url")
+	{
+		std::string urlStr = "http://127.0.0.1.xyz.com:424/doc";
+		CheckUrlString(urlStr, "http", "127.0.0.1.xyz.com", 424, "/doc");
+	}
+
+	SECTION("Valide url with port")
 	{
 		std::string urlStr = "https://www.youtube.com:34/doc";
 		CheckUrlString(urlStr, "https", "www.youtube.com", 34, "/doc");
 	}
 
-	SECTION("Port installed HTTP port MIN_NUMBER_PORT")
+	SECTION("Test MIN_NUMBER_PORT")
 	{
 		std::string urlStr = "https://www.youtube.com:1/doc";
 		CheckUrlString(urlStr, "https", "www.youtube.com", 1, "/doc");
 	}
 
-	SECTION("Port installed HTTP port MAX_NUMBER_PORT")
+	SECTION("Test MAX_NUMBER_PORT")
 	{
 		std::string urlStr = "https://www.youtube.com:65535/doc";
 		CheckUrlString(urlStr, "https", "www.youtube.com", 65535, "/doc");
 	}
 
-	SECTION("hTtP test")
+	SECTION("Test protocol register")
 	{
 		std::string urlStr = "hTtP://ya.ru/";
 		CHttpUrl url(urlStr);

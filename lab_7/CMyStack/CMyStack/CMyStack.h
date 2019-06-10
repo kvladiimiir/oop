@@ -34,7 +34,6 @@ public:
 			return *this;
 		}
 
-		Clear();
 		CopyStack(stack);
 		return *this;
 	}
@@ -52,14 +51,7 @@ public:
 
 	bool IsEmptyStack() const
 	{
-		if (m_stackSize == 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return (m_stackSize == 0);
 	}
 
 	void Clear()
@@ -122,16 +114,17 @@ private:
 
 	void CopyStack(CMyStack const& stack)
 	{
-		std::shared_ptr<Node> metkaCopiedStack = stack.m_top;
-		m_top = std::make_shared<Node>(*metkaCopiedStack);
-		m_stackSize = stack.m_stackSize;
-		auto metkaNewStack = m_top;
+		std::shared_ptr<Node> copiedStack = stack.m_top;
+		m_top = std::make_shared<Node>(*copiedStack);
 
-		while (metkaCopiedStack->prev != nullptr)
+		auto newStack = m_top;
+
+		while (copiedStack->prev != nullptr)
 		{
-			metkaNewStack->prev = std::make_shared<Node>(*metkaCopiedStack->prev);
-			metkaCopiedStack = metkaCopiedStack->prev;
-			metkaNewStack = metkaNewStack->prev;
+			m_stackSize++;
+			newStack->prev = std::make_shared<Node>(*copiedStack->prev);
+			copiedStack = copiedStack->prev;
+			newStack = newStack->prev;
 		}
 	}
 

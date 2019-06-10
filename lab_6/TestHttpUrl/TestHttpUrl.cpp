@@ -79,7 +79,12 @@ TEST_CASE("Check Url String")
 	SECTION("hTtP test")
 	{
 		std::string urlStr = "hTtP://ya.ru/";
-		CheckUrlString("http://ya.ru/", "http", "ya.ru", HTTP_DEF_PORT, "/");
+		CHttpUrl url(urlStr);
+		CHECK(url.GetURL() == "http://ya.ru/");
+		CHECK(url.GetProtocol() == "http");
+		CHECK(url.GetDomain() == "ya.ru");
+		CHECK(url.GetPort() == HTTP_DEF_PORT);
+		CHECK(url.GetDocument() == "/");
 	}
 
 	SECTION("Port installed HTTP port 0")

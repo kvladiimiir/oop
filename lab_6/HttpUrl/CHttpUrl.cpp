@@ -16,7 +16,7 @@ CHttpUrl::CHttpUrl(std::string const& domain, std::string const& document, Proto
 	, m_document(document)
 	, m_domain(domain)
 {
-	m_port = GetPortDef(protocol);
+	m_port = GetPortDef();
 	ValidateDocument(document);
 	ValidateDomain(domain);
 }
@@ -72,7 +72,7 @@ std::string CHttpUrl::GetProtocol() const
 	}
 }
 
-int CHttpUrl::GetPortDef(Protocol protocol) const
+int CHttpUrl::GetPortDef() const
 {
 	if (m_protocol == Protocol::HTTP)
 	{
@@ -89,7 +89,7 @@ int CHttpUrl::GetPort() const
 	return m_port;
 }
 
-Protocol CHttpUrl::GetProtocolEnum(const std::string& protocol)
+Protocol CHttpUrl::GetProtocolEnum(const std::string& protocol) const
 {
 	auto upperProtocol = protocol;
 	std::transform(upperProtocol.begin(), upperProtocol.end(), upperProtocol.begin(), ::tolower);
@@ -110,7 +110,7 @@ Protocol CHttpUrl::GetProtocolEnum(const std::string& protocol)
 
 void CHttpUrl::ParseURL(const std::string& url)
 {
-	std::regex urlValidRegex(R"(^((?:(https?):\/\/)?((?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9]))|(?:(?:(?:\w+\.){1,2}[\w]{2,3})))(?::(\d+))?((?:\/[\w]*)*)(?:\/|(\/[\w]+\.[\w]{3,4})|(\?(?:([\w]+=[\w]+)&)*([\w]+=[\w]+))?|\?(?:(wsdl|wadl))))$)", std::regex_constants::icase);
+	std::regex urlValidRegex(R"(^((?:(https?):\/\/)?((?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9])\.)(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9][0-9]|[0-9]))|(?:(?:(?:\w+\.){1,}[\w]{2,3}))|(localhost))(?::(\d+))?((?:\/[\w]*)*)(?:\/|(\/[\w]+\.[\w]{3,4})|(\?(?:([\w]+=[\w]+)&)*([\w]+=[\w]+))?|\?(?:(wsdl|wadl))))$)", std::regex_constants::icase);
 	std::smatch urlMatch;
 
 	if (!std::regex_match(url, urlMatch, urlValidRegex))
@@ -123,10 +123,10 @@ void CHttpUrl::ParseURL(const std::string& url)
 	m_domain = urlMatch[3];
 	ValidateDomain(m_domain);
 
-	std::string portInput = urlMatch[4];
+	std::string portInput = urlMatch[5];
 	if (portInput.empty())
 	{
-		m_port = GetPortDef(m_protocol);
+		m_port = GetPortDef();
 	}
 	else
 	{
@@ -134,7 +134,7 @@ void CHttpUrl::ParseURL(const std::string& url)
 		ValidatePort(m_port);
 	}
 
-	std::string documentInput = urlMatch[5];
+	std::string documentInput = urlMatch[6];
 	if (documentInput.empty())
 	{
 		m_document = "/";
@@ -144,5 +144,4 @@ void CHttpUrl::ParseURL(const std::string& url)
 		m_document = documentInput;
 		ValidateDocument(m_document);
 	}
-
 }

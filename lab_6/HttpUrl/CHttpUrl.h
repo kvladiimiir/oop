@@ -25,8 +25,8 @@ public:
 
 private:
 	void ParseURL(const std::string& url);
-	int GetPortDef(Protocol protocol) const;
-	Protocol GetProtocolEnum(const std::string& protocol);
+	int GetPortDef() const;
+	Protocol GetProtocolEnum(const std::string& protocol) const;
 
 	Protocol m_protocol;
 	std::string m_url;

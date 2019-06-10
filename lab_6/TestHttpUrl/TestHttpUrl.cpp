@@ -80,6 +80,12 @@ TEST_CASE("Check Url String")
 		CheckUrlString(urlStr, "http", "127.0.0.1.xyz.com", 424, "/doc");
 	}
 
+	SECTION("Test url with .org")
+	{
+		std::string urlStr = "http://www.something.org.ru/doc";
+		CheckUrlString(urlStr, "http", "www.something.org.ru", HTTP_DEF_PORT, "/doc");
+	}
+
 	SECTION("Valide url with port")
 	{
 		std::string urlStr = "https://www.youtube.com:34/doc";

@@ -89,7 +89,7 @@ int CHttpUrl::GetPort() const
 	return m_port;
 }
 
-Protocol CHttpUrl::GetProtocolEnum(const std::string& protocol) const
+static Protocol GetProtocolEnum(const std::string& protocol)
 {
 	auto upperProtocol = protocol;
 	std::transform(upperProtocol.begin(), upperProtocol.end(), upperProtocol.begin(), ::tolower);

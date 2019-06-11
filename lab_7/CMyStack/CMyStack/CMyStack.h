@@ -49,12 +49,12 @@ public:
 		return *this;
 	}
 
-	bool IsEmptyStack() const
+	bool IsEmptyStack() const noexcept
 	{
 		return (m_stackSize == 0);
 	}
 
-	void Clear()
+	void Clear() noexcept
 	{
 		while (!IsEmptyStack())
 		{
@@ -74,14 +74,14 @@ public:
 		}
 	}
 
-	void Push(T const& newElement)
+	void Push(T const& newElement) noexcept
 	{
 		auto newNode = std::make_shared<Node>(newElement, m_top);
 		m_top = newNode;
 		m_stackSize++;
 	}
 
-	void Pop()
+	void Pop() noexcept
 	{
 		if (!IsEmptyStack())
 		{
@@ -112,6 +112,28 @@ private:
 	int m_stackSize = 0;
 	std::shared_ptr<Node> m_top = nullptr;
 
+	//void swap(CMyStack& stack)
+	//{
+	//	std::swap(m_stackSize, stack.m_stackSize);
+	//}
+
+	//void CopyStack(CMyStack const& stack)
+	//{
+	//	CMyStack temp(stack);
+	//	swap(temp);
+	//	std::shared_ptr<Node> copiedStack = temp.m_top;
+	//	m_top = std::make_shared<Node>(*copiedStack);
+
+	//	auto newStack = m_top;
+
+	//	while (copiedStack->prev != nullptr)
+	//	{
+	//		newStack->prev = std::make_shared<Node>(*copiedStack->prev);
+	//		copiedStack = copiedStack->prev;
+	//		newStack = newStack->prev;
+	//	}
+	//}
+
 	void CopyStack(CMyStack const& stack)
 	{
 		std::shared_ptr<Node> copiedStack = stack.m_top;
@@ -130,6 +152,7 @@ private:
 
 	void MoveStack(CMyStack& stack)
 	{
+		Clear();
 		m_stackSize = stack.m_stackSize;
 		m_top = stack.m_top;
 		stack.m_stackSize = 0;

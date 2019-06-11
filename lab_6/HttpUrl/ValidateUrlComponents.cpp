@@ -4,14 +4,14 @@ void ValidateDomain(const std::string& domain)
 {
 	if (domain.empty())
 	{
-		throw std::logic_error("Error validation domain\n");
+		throw CUrlParsingError("Error validation domain\n");
 	}
 
 	for (char ch : domain)
 	{
 		if (!((ch == '/') || (ch == ':') || (ch == '=') || (ch == '#') || (ch == '&') || (ch == '[') || (ch == ']') || (ch == '-') || (ch == '.') || (ch == '_') || (ch == '+') || (ch == '(') || (ch == ')') || (ch == '!') || (ch == '$') || (ch == ',') || isalpha(ch) || isdigit(ch)))
 		{
-			throw std::logic_error("Error validation domain\n");
+			throw CUrlParsingError("Error validation domain\n");
 		}
 	}
 }
@@ -22,7 +22,7 @@ void ValidateDocument(const std::string& document)
 	{
 		if (!((ch == '/') || (ch == ':') || (ch == '=') || (ch == '%') || (ch == '#') || (ch == '&') || (ch == '?') || (ch == '[') || (ch == ']') || (ch == '-') || (ch == '.') || (ch == '_') || (ch == '+') || (ch == '(') || (ch == ')') || (ch == '!') || (ch == '$') || (ch == ',') || isalpha(ch) || isdigit(ch)))
 		{
-			throw std::logic_error("Error validation document\n");
+			throw CUrlParsingError("Error validation document\n");
 		}
 	}
 }
@@ -31,6 +31,6 @@ void ValidatePort(const int& port)
 {
 	if ((port > MAX_NUM_PORT) || (port < MIN_NUM_PORT))
 	{
-		throw std::logic_error("Port error\n");
+		throw CUrlParsingError("Port error\n");
 	}
 }

@@ -115,7 +115,7 @@ void CHttpUrl::ParseURL(const std::string& url)
 
 	if (!std::regex_match(url, urlMatch, urlValidRegex))
 	{
-		throw CUrlParsingError("Error input url-string");
+		throw CUrlParsingError("Error input url-string\n");
 	}
 
 	m_protocol = GetProtocolEnum(urlMatch[2]);

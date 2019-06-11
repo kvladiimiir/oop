@@ -32,15 +32,15 @@ void CheckUrlWithPort(Protocol urlProtocol, const std::string& urlDomain, int ur
 	CHECK(url.GetDocument() == urlDocument);
 }
 
-TEST_CASE("Check Url String")
+TEST_CASE("Check string url")
 {
-	SECTION("Port default HTTPS")
+	SECTION("Valid URL without port test")
 	{
-		std::string urlStr = "HTTPS://drive.google.com/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk";
+		std::string urlStr = "https://drive.google.com/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk";
 		CheckUrlString("https://drive.google.com/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk", "https", "drive.google.com", HTTPS_DEF_PORT, "/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk");
 	}
 
-	SECTION("Test uppercase http and no port")
+	SECTION("Valid URL without port and uppercase protocol")
 	{
 		std::string urlStr = "HTTP://lks.volgatech.net/ExamList";
 		CHttpUrl url(urlStr);
@@ -51,7 +51,7 @@ TEST_CASE("Check Url String")
 		CHECK(url.GetDocument() == "/ExamList");
 	}
 
-	SECTION("Test uppercase https and 73 port")
+	SECTION("Test uppercase http and 73 port")
 	{
 		std::string urlStr = "HTTP://lks.volgatech.net:73/ExamList";
 		CHttpUrl url(urlStr);
@@ -62,7 +62,7 @@ TEST_CASE("Check Url String")
 		CHECK(url.GetDocument() == "/ExamList");
 	}
 
-	SECTION("Valide url no port")
+	SECTION("Valide url withiout port test")
 	{
 		std::string urlStr = "https://www.youtube.com/";
 		CheckUrlString(urlStr, "https", "www.youtube.com", HTTPS_DEF_PORT, "/");
@@ -86,12 +86,6 @@ TEST_CASE("Check Url String")
 		CheckUrlString(urlStr, "http", "www.something.org.ru", HTTP_DEF_PORT, "/doc");
 	}
 
-	SECTION("Valide url with port")
-	{
-		std::string urlStr = "https://www.youtube.com:34/doc";
-		CheckUrlString(urlStr, "https", "www.youtube.com", 34, "/doc");
-	}
-
 	SECTION("Test MIN_NUMBER_PORT")
 	{
 		std::string urlStr = "https://www.youtube.com:1/doc";
@@ -104,7 +98,7 @@ TEST_CASE("Check Url String")
 		CheckUrlString(urlStr, "https", "www.youtube.com", 65535, "/doc");
 	}
 
-	SECTION("Test protocol register")
+	SECTION("Validated url test with a different register protocol")
 	{
 		std::string urlStr = "hTtP://ya.ru/";
 		CHttpUrl url(urlStr);
@@ -115,70 +109,64 @@ TEST_CASE("Check Url String")
 		CHECK(url.GetDocument() == "/");
 	}
 
-	SECTION("Port installed HTTP port 0")
+	SECTION("CUrlParsingError test: url with invalid port = 0")
 	{
-		std::string urlStr = "HTTP://www.my-site-time.com:0/docs/document1.html";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+		std::string urlStr = "https://www.youtube.com:0/doc";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
-	SECTION("Port installed HTTP port 65536")
+	SECTION("CUrlParsingError test: url with invalid port = 65536")
 	{
-		std::string urlStr = "HTTP://www.mysite-time.com:65536/docs/document1.html";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+		std::string urlStr = "https://www.youtube.com:65536/doc";
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
-	SECTION("Url empty")
+	SECTION("CUrlParsingError test: empty url")
 	{
 		std::string urlStr = "";
 		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
-	SECTION("Invalid URL port")
+	SECTION("CUrlParsingError test: invalid URL port")
 	{
 		std::string urlStr = "https://www.google.com:-1/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
-	SECTION("Invalid URL domain 1")
-	{
-		std::string urlStr = "https://www.googl^e.com/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
-	}
-
-	SECTION("Invalid URL domain 2")
+	SECTION("CUrlParsingError test: invalid url domain")
 	{
 		std::string urlStr = "https://www google.com/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
-	SECTION("Invalid URL")
+	SECTION("CUrlParsingError test: invalid protocol")
 	{
 		std::string urlStr = "http:/host/doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
-	SECTION("Invalid URL 2")
+	SECTION("CUrlParsingError test: url with only protocol")
 	{
 		std::string urlStr = "http://";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 
-	SECTION("Invalid URL 3")
+	SECTION("CUrlParsingError test: invalid url")
 	{
 		std::string urlStr = "http:///doc";
-		CHECK_THROWS_AS(CHttpUrl(urlStr), std::logic_error);
+		CHECK_THROWS_AS(CHttpUrl(urlStr), CUrlParsingError);
 	}
 }
 
 TEST_CASE("Check Url Without Port")
 {
-	SECTION("HTTP not empty document")
+	SECTION("Test valid url for components without port")
 	{
 		std::string urlStr = "http://mathhelpplanet.com/static.php?p=onlain-reshit-treugolnik";
 		CheckUrlWithoutPort(Protocol::HTTP, "mathhelpplanet.com", "/static.php?p=onlain-reshit-treugolnik");
 	}
 
-	SECTION("HTTP empty document")
+	SECTION("Test valid url for components without document and without port")
 	{
 		std::string urlStr = "http://mathhelpplanet.com/";
 		CheckUrlWithoutPort(Protocol::HTTP, "mathhelpplanet.com", "/");
@@ -187,13 +175,13 @@ TEST_CASE("Check Url Without Port")
 
 TEST_CASE("Check Url With Port")
 {
-	SECTION("HTTP not empty document")
+	SECTION("Test valid url for components with port")
 	{
 		std::string urlStr = "http://vk.com:832/audios62352g721709";
 		CheckUrlWithPort(Protocol::HTTP, "vk.com", 832, "/audios62352g721709");
 	}
 
-	SECTION("HTTP empty document")
+	SECTION("Test valid url for components with port without document")
 	{
 		std::string urlStr = "http://vk.com:214/";
 		CheckUrlWithPort(Protocol::HTTP, "vk.com", 214, "/");

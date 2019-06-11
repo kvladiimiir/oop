@@ -40,7 +40,7 @@ TEST_CASE("Check string url")
 		CheckUrlString("https://drive.google.com/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk", "https", "drive.google.com", HTTPS_DEF_PORT, "/drive/folders/0B8c4dq91MwITUk1RU1ZwWjFsWUk");
 	}
 
-	SECTION("Valid URL without port and uppercase protocol")
+	SECTION("Valid URL without port and uppercase protocol test")
 	{
 		std::string urlStr = "HTTP://lks.volgatech.net/ExamList";
 		CHttpUrl url(urlStr);
